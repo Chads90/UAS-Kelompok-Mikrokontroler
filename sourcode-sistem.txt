@@ -1,0 +1,35 @@
+/*
+ * Proyek: Jemuran Pintar Otomatis + Web Monitoring (macOS Pro UI)
+ * Fitur Tambahan: FreeRTOS & ADC (Memenuhi Kriteria UAS)
+ * Board : Wemos D1 R32 (ESP32)
+ */
+
+#include <ESP32Servo.h>
+#include <WiFi.h>
+#include <WebServer.h>
+
+// --- KONFIGURASI WIFI ---
+const char* ssid = "trinexa.net";       
+const char* password = "trinexa2026"; 
+
+WebServer server(80);
+
+// --- PIN DEFINITIONS ---
+#define SERVO_PIN 13        
+#define RAIN_SENSOR_PIN 36  // PIN ADC ESP32 (Gunakan pin ADC seperti VP/36, VN/39, 34, atau 35 jika di Shield berbeda)
+#define LIGHT_SENSOR_PIN 34 // PIN ADC ESP32 
+
+Servo myServo;
+
+// --- VARIABEL GLOBAL & THRESHOLD ADC ---
+int statusJemuranSaatIni = -1; 
+int durasi90Derajat = 200; 
+
+// Nilai ADC ESP32 adalah 0 - 4095. Sesuaikan nilai ini saat pengujian!
+const int THRESHOLD_HUJAN = 2000; // Di bawah ini = hujan deras (sensor hujan analog biasanya turun nilainya saat basah)
+const int THRESHOLD_GELAP = 3000; // Di atas ini = gelap (LDR naik nilainya saat gelap)
+
+String webHujan = "Standby";
+String webGelap = "Standby";
+String webAtap = "Memuat...";
+
